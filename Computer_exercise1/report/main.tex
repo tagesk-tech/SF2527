@@ -5,13 +5,12 @@
 \newcommand{\coursename}{SF2527 Numerical Methods for Differential Equations I}
 \newcommand{\exercisetitle}{Computer Exercise 1}
 \newcommand{\exercisesubtitle}{Ordinary Differential Equations and Elliptic Equations}
-\newcommand{\groupname}{\rule{35mm}{0.4pt}}
-\newcommand{\studentone}{\rule{32mm}{0.4pt}}
-\newcommand{\studentoneid}{\rule{24mm}{0.4pt}}
-\newcommand{\studentoneemail}{\rule{35mm}{0.4pt}}
-\newcommand{\studenttwo}{\rule{32mm}{0.4pt}}
-\newcommand{\studenttwoid}{\rule{24mm}{0.4pt}}
-\newcommand{\studenttwoemail}{\rule{35mm}{0.4pt}}
+
+\IfFileExists{student_info.tex}{
+  \input{student_info}
+}{
+  \input{student_info.example}
+}
 
 \begin{document}
 
