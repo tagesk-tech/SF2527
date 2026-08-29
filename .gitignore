@@ -1,0 +1,4 @@
+*.asv
+*.autosave
+.DS_Store
+Computer_exercise1/report/build/

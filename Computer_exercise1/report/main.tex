@@ -1,0 +1,59 @@
+\documentclass[11pt,a4paper]{article}
+
+\input{minimal_preamble}
+
+\newcommand{\coursename}{SF2527 Numerical Methods for Differential Equations I}
+\newcommand{\exercisetitle}{Computer Exercise 1}
+\newcommand{\exercisesubtitle}{Ordinary Differential Equations and Elliptic Equations}
+\newcommand{\groupname}{\rule{35mm}{0.4pt}}
+\newcommand{\studentone}{\rule{32mm}{0.4pt}}
+\newcommand{\studentoneid}{\rule{24mm}{0.4pt}}
+\newcommand{\studentoneemail}{\rule{35mm}{0.4pt}}
+\newcommand{\studenttwo}{\rule{32mm}{0.4pt}}
+\newcommand{\studenttwoid}{\rule{24mm}{0.4pt}}
+\newcommand{\studenttwoemail}{\rule{35mm}{0.4pt}}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+  \centering
+  {\Large KTH Royal Institute of Technology\par}
+  \vspace{1.2cm}
+  {\large \coursename\par}
+  \vspace{2.2cm}
+  {\Huge\bfseries \exercisetitle\par}
+  \vspace{0.5cm}
+  {\LARGE \exercisesubtitle\par}
+  \vfill
+
+  \begin{tabular}{@{}ll@{}}
+    \textbf{Exercise number:} & Computer Exercise 1 \\
+    \textbf{Group:} & \groupname
+  \end{tabular}
+
+  \vspace{1.2cm}
+  \begin{tabularx}{0.96\textwidth}{@{}>{\bfseries}lXXX@{}}
+    \toprule
+    Student & Name & Personal number & Email \\
+    \midrule
+    1 & \studentone & \studentoneid & \studentoneemail \\
+    2 & \studenttwo & \studenttwoid & \studenttwoemail \\
+    \bottomrule
+  \end{tabularx}
+
+  \vfill
+  {\large HT26\par}
+  \vspace{0.25cm}
+  {\large \today\par}
+\end{titlepage}
+
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+
+\pagenumbering{arabic}
+\input{sections/report_body}
+
+\end{document}

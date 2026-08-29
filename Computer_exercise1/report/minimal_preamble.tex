@@ -1,0 +1,41 @@
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{placeins}
+\usepackage[hidelinks]{hyperref}
+
+\geometry{margin=24mm,headheight=14pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\graphicspath{{figures/}}
+
+\definecolor{kthblue}{HTML}{004791}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=kthblue,
+  urlcolor=kthblue,
+  pdftitle={SF2527 Computer Exercise 1},
+  pdfauthor={Student group}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{SF2527 -- Computer Exercise 1}
+\rhead{HT26}
+\cfoot{\thepage\ of \pageref*{LastPage}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert_2}
+\newcommand{\matlab}{\textsc{Matlab}}
+\newcommand{\dd}{\,\mathrm{d}}
+\numberwithin{equation}{section}
+\renewcommand{\arraystretch}{1.15}
