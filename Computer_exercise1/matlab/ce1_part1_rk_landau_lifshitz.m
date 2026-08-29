@@ -89,7 +89,7 @@ loglog(h_plot, exp(line_fit(2))*h_plot.^estimated_order, '--', 'LineWidth', 1.3)
 grid on;
 xlabel('Step size h');
 ylabel('||m_N(T) - m_{2N}(T)||_2');
-title('Runge--Kutta order of accuracy');
+title('Runge-Kutta order of accuracy');
 legend('Endpoint differences', sprintf('Slope = %.3f', estimated_order), ...
        'Location', 'northwest');
 

@@ -37,7 +37,7 @@ plot(t, x(3, :), 'LineWidth', 1.3);
 grid on;
 xlabel('Time t');
 ylabel('Concentration');
-title('Robertson problem: explicit Runge--Kutta');
+title('Robertson problem: explicit Runge-Kutta');
 legend('x_A', 'x_B', 'x_C');
 
 %% Concentrations on a logarithmic scale
@@ -75,7 +75,7 @@ grid on;
 xlabel('Time t');
 ylabel('Eigenvalue magnitude');
 title('Nonzero eigenvalues of the Jacobian');
-legend('|lambda_2|', '|lambda_3|', 'Location', 'best');
+legend('|\lambda_2|', '|\lambda_3|', 'Location', 'best');
 
 R = @(z) 1 + z + z.^2/2 + z.^3/6;
 z0 = fzero(@(z) abs(R(z)) - 1, [-3, -2]);
@@ -130,7 +130,7 @@ semilogy(t, x(3, :), '-', t_IE, x_IE(:, 3), '--', 'LineWidth', 1.3);
 grid on;
 xlabel('Time t');
 ylabel('Concentration');
-title('Runge--Kutta and Implicit Euler');
+title('Runge-Kutta and Implicit Euler');
 legend('RK x_A', 'IE x_A', 'RK x_B', 'IE x_B', ...
        'RK x_C', 'IE x_C', 'Location', 'best');
 

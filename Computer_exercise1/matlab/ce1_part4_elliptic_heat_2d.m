@@ -72,21 +72,23 @@ mesh(x_plot, y_plot, T_plot);
 xlabel('x');
 ylabel('y');
 zlabel('Temperature T');
-title('Localized heat source');
+title('Temperature from localized heat source');
 
 figure;
 imagesc(x_plot, y_plot, T_plot);
 set(gca, 'YDir', 'normal');
 axis equal tight;
-colorbar;
+cb = colorbar;
+cb.Label.String = 'Temperature T';
 xlabel('x');
 ylabel('y');
-title('Localized heat source');
+title('Temperature from localized heat source');
 
 figure;
 contour(x_plot, y_plot, T_plot, 20);
 axis equal tight;
-colorbar;
+cb = colorbar;
+cb.Label.String = 'Temperature T';
 xlabel('x');
 ylabel('y');
-title('Localized heat source');
+title('Temperature from localized heat source');
