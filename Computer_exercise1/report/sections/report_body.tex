@@ -1,13 +1,13 @@
 \section{Runge--Kutta accuracy and stability}
 
-The method used throughout Parts 1 and 2 is
+The Runge--Kutta method used in Parts 1 and 2 is
 \begin{align}
  k_1&=f(t_n,u_n), &
  k_2&=f(t_n+h,u_n+hk_1),\\
  k_3&=f\!\left(t_n+\frac h2,u_n+\frac h4k_1+\frac h4k_2\right), &
  u_{n+1}&=u_n+\frac h6(k_1+k_2+4k_3).
 \end{align}
-It is an explicit three-stage, one-step Runge--Kutta method.
+It is explicit, has three stages and uses one step at a time.
 
 \subsection{Landau--Lifshitz system}
 
@@ -37,13 +37,13 @@ Since $Cm=a\times m$, the ODE is
 \caption{Magnetization components and trajectory for $0\leq t\leq50$ with $h=0.01$.}
 \end{figure}
 
-The scalar product $a^{\mathsf T}m(t)=a^{\mathsf T}m(0)=1/2$ is constant. Thus the
-trajectory lies in an affine plane normal to $a$. The perpendicular component
-is damped and
+The value $a^{\mathsf T}m(t)=a^{\mathsf T}m(0)=1/2$ stays constant. Therefore
+$m(t)$ stays in a plane perpendicular to $a$. The part perpendicular to $a$
+goes to zero, so
 \[
  m(t)\longrightarrow (a^{\mathsf T}m(0))a=\frac12a,
 \]
-which agrees with the plots.
+This is also what we see in the plots.
 
 \subsection{Order of accuracy}
 
@@ -51,11 +51,11 @@ For $N=50,100,200,400,800,1600$, let $h=50/N$ and
 \[
  d_N=\norm{\widetilde m_N(50)-\widetilde m_{2N}(50)}.
 \]
-The fitted log--log slope is
+The slope in the log--log plot is
 \[
  \boxed{p=2.994893},
 \]
-confirming third-order global accuracy.
+which is close to 3. The method is therefore third order.
 
 \begin{figure}[htbp]
 \centering
@@ -73,16 +73,16 @@ The stability function is
 \[
  R(z)=1+z+\frac{z^2}{2}+\frac{z^3}{6}.
 \]
-Stability requires $|R(h\lambda_j)|\leq1$ for every eigenvalue. The zero
-eigenvalue gives $R(0)=1$. For $\lambda=-0.07+i$, the first positive root of
+We need $|R(h\lambda_j)|\leq1$ for every eigenvalue. The zero eigenvalue gives
+$R(0)=1$. For $\lambda=-0.07+i$, we solve
 \[
  |R(h\lambda)|-1=0
 \]
-was computed with \texttt{fzero} on $[2,2.5]$, giving
+with \texttt{fzero} on $[2,2.5]$. This gives
 \[
  \boxed{h_0=2.055596}.
 \]
-The run with $h=2$ is stable, while $h=50/24=2.083333$ is unstable.
+The test with $h=2$ is stable. The test with $h=50/24=2.083333$ is unstable.
 
 \begin{figure}[htbp]
 \centering
@@ -104,13 +104,13 @@ where
  r_1=5.0\times10^{-2},\qquad r_2=1.2\times10^4,
  \qquad r_3=4.0\times10^7,qquad x(0)=\begin{bmatrix}1&0&0\end{bmatrix}^{\mathsf T}.
 \]
-The invariant $x_A+x_B+x_C=1$ was preserved numerically.
+The sum $x_A+x_B+x_C$ should stay equal to 1, and it did so in our results.
 
 \subsection{Explicit Runge--Kutta method}
 
-On $0\leq t\leq10$, $h=7.0\times10^{-4}$ gave a stable solution. The linear
-plot hides the small intermediate concentration $x_B$; the logarithmic plot
-shows its fast initial transient.
+On $0\leq t\leq10$, $h=7.0\times10^{-4}$ gave a stable solution. In the normal
+plot, $x_B$ is too small to see clearly. The log plot shows its fast change near
+$t=0$.
 
 \begin{figure}[htbp]
 \centering
@@ -131,17 +131,18 @@ r_1&-r_2x_C-2r_3x_B&-r_2x_B\\
 0&2r_3x_B&0
 \end{bmatrix}.
 \]
-For a perturbation $e$, $e'\approx J(x(t))e$, so local stability requires
-$|R(h\lambda_j(t))|\leq1$. One eigenvalue is zero. Along the computed solution,
+For a small change $e$, the linearized equation is $e'\approx J(x(t))e$.
+Therefore we check $|R(h\lambda_j(t))|\leq1$. One eigenvalue is zero. Along the
+computed solution,
 \[
  \max_t|\lambda_j(t)|=3365.924700.
 \]
-The negative real-axis boundary of the RK region gives
+The end of the RK stability region on the negative real axis gives
 \[
  h_{\max}\approx7.4652\times10^{-4},
 \]
-in agreement with the empirical value. The restriction becomes more severe as
-the large eigenvalue grows in magnitude.
+which is close to the value found by testing. The large eigenvalue grows with
+time, so the allowed step size gets smaller.
 
 \begin{figure}[htbp]
 \centering
@@ -149,7 +150,7 @@ the large eigenvalue grows in magnitude.
 \caption{Magnitudes of the two nonzero Jacobian eigenvalues.}
 \end{figure}
 
-For the long integration, only the current state was stored.
+For the long run, we stored only the current value of $x$.
 \begin{table}[htbp]
 \centering
 \caption{Explicit RK result at $t=1000$.}
@@ -172,17 +173,17 @@ Implicit Euler satisfies
 \[
  u_{n+1}=u_n+hf(u_{n+1}).
 \]
-At each step, the supplied code solves
+At each step, the supplied function solves
 \[
  F(v)=v-hf(v)-u_n=0
 \]
-with Newton's method:
+with Newton's method. Here $v$ is the new solution value:
 \[
  (I-hJ_f(v))d=-F(v),\qquad v\leftarrow v+d.
 \]
-Runs with $h=10$, $1$ and $0.1$ remained bounded. The large steps are stable but
-inaccurate. The choice $h=0.1$ visually agrees with RK on $[0,10]$ and was reused
-on $[0,1000]$.
+Runs with $h=10$, $1$ and $0.1$ did not blow up. Large steps are stable, but not
+accurate. With $h=0.1$, the IE and RK curves are close on $[0,10]$. We used the
+same step size on $[0,1000]$.
 
 \begin{figure}[htbp]
 \centering
@@ -197,8 +198,8 @@ on $[0,1000]$.
 
 \subsection{Efficiency}
 
-Errors were measured against the supplied reference value at $t=1000$. The IE
-timing version stores only the current state.
+We used the given reference value at $t=1000$ to calculate the errors. For the
+timing test, the IE code stores only the current value.
 
 \begin{table}[htbp]
 \centering
@@ -216,10 +217,11 @@ IE & $0.001$ & $5.04\times10^{-7}$ & $4.04$\\
 \end{tabular}
 \end{table}
 
-IE is faster for moderate accuracy because stability permits large steps. For
-high accuracy, its first-order error and Newton solves dominate; RK is faster
-below an error of roughly $10^{-6}$. For the nonstiff problem in Part 1, IE has
-no useful stability advantage, so the higher-order explicit method is preferable.
+IE is faster when an error around $10^{-4}$ or $10^{-5}$ is enough, since it can
+take large steps. For smaller errors, IE needs many steps because it is only
+first order. Each step also needs a Newton solve. RK is faster below an error of
+about $10^{-6}$. Part 1 is not stiff, so IE has no useful stability benefit
+there. The higher-order RK method is a better choice for that problem.
 
 \FloatBarrier
 \section{One-dimensional convection--diffusion equation}
@@ -257,12 +259,12 @@ where
  d=\frac2{h^2},\qquad
  r=-\frac1{h^2}+\frac{v}{2h}.
 \]
-The known value $T_0$ is moved to the first right-hand-side entry. The
-second-order outlet row is
+The known value $T_0$ is moved to the first entry on the right-hand side. We use
+this second-order row at $z=1$:
 \[
  T_{N-2}-4T_{N-1}+(3+2h\alpha)T_N=2h\alpha T_{\mathrm{out}}.
 \]
-The resulting sparse linear system is solved with backslash.
+We solve the sparse matrix system with Matlab backslash.
 
 \subsection{Grid refinement}
 
@@ -286,17 +288,17 @@ $N$ & $h$ & $T_h(0.5)$\\
 \end{tabular}
 \end{table}
 
-Using successive differences gives
+The three values give
 \[
  p=\log_2\!\left(
  \frac{|T_{80}(0.5)-T_{160}(0.5)|}
  {|T_{160}(0.5)-T_{320}(0.5)|}\right)
  =\boxed{2.000440}.
 \]
-The source is evaluated at the same points $z_j$ on every grid, and $z=0.5$
-is read at index $j=N/2$.
+This is very close to order 2. We evaluate $Q$ at the grid points $z_j$ and
+read $T(0.5)$ at $j=N/2$ on every grid.
 
-\subsection{Velocity dependence}
+\subsection{Different velocities}
 
 \begin{table}[htbp]
 \centering
@@ -319,9 +321,9 @@ $v$ & $N$ & $h$\\
 \caption{Temperature profiles for $v=1,5,15,100$.}
 \end{figure}
 
-Larger $v$ transports heat downstream more rapidly, so the temperature rise is
-smaller and the profile is flatter. It also produces a thinner outlet feature;
-the finer grids resolve this feature without oscillations.
+When $v$ is larger, the fluid moves the heat farther down the pipe. The
+temperature rise becomes smaller and the curve becomes flatter. The change near
+$z=1$ also gets sharper, so a smaller $h$ is needed to avoid oscillations.
 
 \FloatBarrier
 \section{Two-dimensional elliptic heat equation}
@@ -330,18 +332,19 @@ The problem is
 \[
  -\Delta T=f\quad\text{in }(0,12)\times(0,5),
 \]
-with $T(x,0)=T_{\mathrm{ext}}=25$ and homogeneous Neumann conditions on the
-left, right and top boundaries. The mesh has
+with $T(x,0)=T_{\mathrm{ext}}=25$. The left, right and top sides are insulated,
+so the derivative across each side is zero. The mesh has
 \[
  h=\frac{12}{N}=\frac5M.
 \]
 
-The bottom values are known. All points with $i=0,\ldots,N$ and
-$j=1,\ldots,M$ are numbered by
+The values at the bottom are known. The other grid points, with
+$i=0,\ldots,N$ and $j=1,\ldots,M$, are numbered by
 \[
  k=i+1+(j-1)(N+1).
 \]
-Thus the sparse matrix has size $(N+1)M\times(N+1)M$. At an interior point,
+Each numbered point gives one row in the matrix. The matrix size is therefore
+$(N+1)M\times(N+1)M$. At an inner grid point,
 \[
  4T_{i,j}-T_{i-1,j}-T_{i+1,j}-T_{i,j-1}-T_{i,j+1}
  =h^2f(x_i,y_j).
@@ -353,7 +356,8 @@ The second-order boundary rows are
  3T_{N,j}-4T_{N-1,j}+T_{N-2,j}&=0,\\
  3T_{i,M}-4T_{i,M-1}+T_{i,M-2}&=0.
 \end{align*}
-The upper corners use the side rows. This gives one equation for every unknown.
+At the two upper corners we use the side rows. We now have one equation for
+each unknown.
 
 \subsection{Constant source}
 
@@ -368,7 +372,7 @@ For $f\equiv2$ and $h=0.2$, the computed value is
 \caption{Numerical solution for $f\equiv2$ and $h=0.2$.}
 \end{figure}
 
-For an exact solution $T=c_0+c_1y+c_2y^2$, the PDE and boundary conditions give
+Put $T=c_0+c_1y+c_2y^2$ into the PDE and the boundary conditions. This gives
 \[
  -2c_2=2,\qquad c_0=25,\qquad c_1+10c_2=0.
 \]
@@ -376,14 +380,14 @@ Hence
 \[
  \boxed{T(x,y)=25+10y-y^2},\qquad T(6,2)=41.
 \]
-The central difference satisfies
+A Taylor expansion gives
 \[
  \frac{g(x+h)-2g(x)+g(x-h)}{h^2}
  =g''(x)+\frac{h^2}{12}g^{(4)}(x)+O(h^4).
 \]
-For a quadratic, $g^{(3)}=g^{(4)}=0$. Both the interior stencil and the
-one-sided boundary derivatives are therefore exact. The observed difference
-at $(6,2)$ was $3.70\times10^{-13}$, due only to floating-point arithmetic.
+For a quadratic, $g^{(3)}=g^{(4)}=0$. The inner stencil and the one-sided
+boundary formulas are then exact. The difference at $(6,2)$ was only
+$3.70\times10^{-13}$, which comes from rounding in the computer.
 
 \subsection{Localized source}
 
@@ -391,7 +395,7 @@ For
 \[
  f(x,y)=100\exp\!\left(-\frac12(x-4)^2-4(y-1)^2\right),
 \]
-the same matrix construction is used with a new right-hand side.
+we build the matrix in the same way. Only the right-hand side changes.
 
 \begin{table}[htbp]
 \centering
@@ -411,8 +415,8 @@ The successive-difference estimate is
 \[
  \boxed{p=2.059792},
 \]
-which is consistent with second-order convergence. For the finest grid the
-system has $24100$ unknowns, so sparse storage is essential.
+which is close to order 2. The finest grid has $24100$ unknowns. A sparse matrix
+saves both memory and time because most entries are zero.
 
 \begin{figure}[htbp]
 \centering
@@ -428,17 +432,17 @@ system has $24100$ unknowns, so sparse storage is essential.
 \begin{minipage}{0.49\linewidth}
 \includegraphics[width=\linewidth]{part4_localized_contour.pdf}
 \end{minipage}
-\caption{Image and contour views for $h=0.1$. The hot region is centred near the source at $(4,1)$.}
+\caption{Image and contour plots for $h=0.1$. The hottest area is close to the source at $(4,1)$.}
 \end{figure}
 
 \FloatBarrier
 \section{Conclusions}
 
-The RK method showed third-order accuracy and the predicted stability limit.
-For the stiff Robertson problem, implicit Euler was efficient at moderate
-accuracy, while RK was preferable for high accuracy. Both finite-difference
-implementations showed second-order convergence. The analytic quadratic in
-Part 4 provided an exact verification of the two-dimensional matrix assembly.
+The RK method had order 3, and the stability test matched the value from the
+stability region. For the stiff Robertson problem, IE was faster for larger
+errors, while RK was faster when a small error was needed. The 1D and 2D finite
+difference methods both had order 2. In Part 4, the numerical solution was exact
+for the quadratic test problem, apart from rounding errors.
 
 \section*{Submitted MATLAB files}
 
