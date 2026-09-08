@@ -1,4 +1,4 @@
-%% SF2527 Computer Exercise 1 -- Part 4
+%% Problem 4
 clear;
 clc;
 close all;

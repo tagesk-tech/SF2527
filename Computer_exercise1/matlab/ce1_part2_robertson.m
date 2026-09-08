@@ -15,7 +15,7 @@ f = @(t, x) [-r1*x(1) + r2*x(2)*x(3);
               r1*x(1) - r2*x(2)*x(3) - r3*x(2)^2;
               r3*x(2)^2];
 
-%% Explicit Runge--Kutta solution
+%% Runge-Kutta solution
 h = 7.0e-4;
 N = ceil(T/h);
 h = T/N;
@@ -54,10 +54,12 @@ legend('x_A', 'x_B', 'x_C');
 
 fprintf('Stable RK step size: %.8f\n', h);
 
-%% Part 2(b) -- Jacobian eigenvalues
-J = @(x) [-r1,  r2*x(3),                 r2*x(2);
-           r1, -r2*x(3) - 2*r3*x(2),   -r2*x(2);
-            0,  2*r3*x(2),                       0];
+
+
+%% Part 2(b) Jacobian eigenvalues
+J = @(x) [-r1,  r2*x(3), r2*x(2);
+           r1, -r2*x(3) - 2*r3*x(2), -r2*x(2);
+            0,  2*r3*x(2), 0];
 
 lambda = zeros(3, N + 1);
 
@@ -85,7 +87,8 @@ fprintf('Largest Jacobian eigenvalue magnitude: %.6f\n', ...
         max(abs(lambda(3, :))));
 fprintf('Predicted RK stability limit: %.8f\n', h_limit);
 
-%% Part 2(c) -- Explicit Runge--Kutta solution on [0,1000]
+
+%% Part 2(c) Runge-Kutta solution on [0,1000]
 T_long = 1000;
 h_long = 2.8e-4;
 N_long = ceil(T_long/h_long);
@@ -107,6 +110,8 @@ fprintf('x_A(1000) = %.12f\n', x_long(1));
 fprintf('x_B(1000) = %.12e\n', x_long(2));
 fprintf('x_C(1000) = %.12f\n', x_long(3));
 fprintf('Computational time = %.4f seconds\n', elapsed_time);
+
+
 
 %% Part 2(d) -- Implicit Euler
 h_IE_tests = [10, 1, 0.1];
@@ -147,7 +152,10 @@ ylabel('Concentration');
 title('Implicit Euler solution on [0,1000]');
 legend('x_A', 'x_B', 'x_C');
 
-%% Part 2(e) -- Accuracy and efficiency
+
+
+
+%% Part 2(e) Accuracy and efficiency
 x_reference = [0.293414227164; 0.000001716342048; 0.706584056494];
 h_IE_values = [1, 0.1, 0.01, 0.001];
 IE_errors = zeros(length(h_IE_values), 1);

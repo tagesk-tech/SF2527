@@ -106,7 +106,9 @@ where
 \]
 The sum $x_A+x_B+x_C$ should stay equal to 1, and it did so in our results.
 
-\subsection{Explicit Runge--Kutta method}
+\subsection*{2(a) Explicit Runge--Kutta on $[0,10]$}
+\phantomsection
+\addcontentsline{toc}{subsection}{2(a) Explicit Runge--Kutta on [0,10]}
 
 On $0\leq t\leq10$, $h=7.0\times10^{-4}$ gave a stable solution. In the normal
 plot, $x_B$ is too small to see clearly. The log plot shows its fast change near
@@ -122,6 +124,11 @@ $t=0$.
 \end{minipage}
 \caption{Explicit RK solution on $0\leq t\leq10$ with $h\approx7.0\times10^{-4}$.}
 \end{figure}
+
+\FloatBarrier
+\subsection*{2(b) Jacobian eigenvalues and stability}
+\phantomsection
+\addcontentsline{toc}{subsection}{2(b) Jacobian eigenvalues and stability}
 
 The Jacobian is
 \[
@@ -150,8 +157,13 @@ time, so the allowed step size gets smaller.
 \caption{Magnitudes of the two nonzero Jacobian eigenvalues.}
 \end{figure}
 
+\FloatBarrier
+\subsection*{2(c) Explicit Runge--Kutta on $[0,1000]$}
+\phantomsection
+\addcontentsline{toc}{subsection}{2(c) Explicit Runge--Kutta on [0,1000]}
+
 For the long run, we stored only the current value of $x$.
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Explicit RK result at $t=1000$.}
 \begin{tabular}{@{}lc@{}}
@@ -167,7 +179,10 @@ Time & $2.93\ \mathrm{s}$\\
 \end{tabular}
 \end{table}
 
-\subsection{Implicit Euler}
+\FloatBarrier
+\subsection*{2(d) Implicit Euler}
+\phantomsection
+\addcontentsline{toc}{subsection}{2(d) Implicit Euler}
 
 Implicit Euler satisfies
 \[
@@ -196,7 +211,14 @@ same step size on $[0,1000]$.
 \caption{Short-time RK/IE comparison and the IE solution on $[0,1000]$.}
 \end{figure}
 
-\subsection{Efficiency}
+\noindent\textit{Note:} Both the RK and implicit Euler solutions are plotted over
+$0\leq t\leq10$, but their curves overlap almost completely and are therefore
+difficult to distinguish.
+
+\FloatBarrier
+\subsection*{2(e) Accuracy and efficiency}
+\phantomsection
+\addcontentsline{toc}{subsection}{2(e) Accuracy and efficiency}
 
 We used the given reference value at $t=1000$ to calculate the errors. For the
 timing test, the IE code stores only the current value.
@@ -217,38 +239,47 @@ IE & $0.001$ & $5.04\times10^{-7}$ & $4.04$\\
 \end{tabular}
 \end{table}
 
+The timings are influenced by both the number of steps and the work per step.
+For a fixed final time $T$, the number of steps is
+\[
+ N=\frac{T}{h}.
+\]
+The RK method uses three right-hand-side evaluations per step, whereas each IE
+step requires several Newton iterations and a linear solve. An IE step is
+therefore more expensive, but IE can use a much larger step size on this stiff
+problem.
+
+The methods also have different accuracy orders. In the asymptotic regime,
+their endpoint errors behave approximately as
+\[
+ e_{\mathrm{RK}}(h)\approx C_{\mathrm{RK}}h^3,
+ \qquad
+ e_{\mathrm{IE}}(h)\approx C_{\mathrm{IE}}h.
+\]
+The IE values in the table display the expected first-order behavior: reducing
+$h$ by a factor of ten reduces the error by approximately the same factor. For
+RK, stability forces the small step size $h=2.8\times10^{-4}$, corresponding to
+about $3.57\times10^6$ steps on $[0,1000]$. Its computed endpoint agrees with the
+given reference values to their stated precision. The reported
+$3.06\times10^{-13}$ difference is therefore near the precision limit of the
+reference and should not be interpreted as an equally precise measurement of
+the true error.
+
 IE is faster when an error around $10^{-4}$ or $10^{-5}$ is enough, since it can
-take large steps. For smaller errors, IE needs many steps because it is only
-first order. Each step also needs a Newton solve. RK is faster below an error of
+take large steps. The table places the crossover near $10^{-6}$: IE takes
+$0.409$ seconds at an error of $5.04\times10^{-6}$, while it takes $4.04$
+seconds at an error of $5.04\times10^{-7}$, compared with $2.93$ seconds for
+RK. For smaller errors, IE needs many steps because it is only first order, and
+each step also needs a Newton solve. RK is therefore faster below an error of
 about $10^{-6}$. Part 1 is not stiff, so IE has no useful stability benefit
 there. The higher-order RK method is a better choice for that problem.
 
 \FloatBarrier
 \section{One-dimensional convection--diffusion equation}
 
-The problem is
-\[
- -T''(z)+vT'(z)=Q(z),\qquad 0<z<1,
-\]
-with $T(0)=T_0$ and
-\[
- -T'(1)=\alpha(v)(T(1)-T_{\mathrm{out}}),\qquad
- \alpha(v)=\sqrt{\frac{v^2}{4}+\alpha_0^2}-\frac v2.
-\]
-The parameters are
-\[
- a=0.1,\ b=0.4,\ Q_0=7000,\ \alpha_0=50,\
- T_{\mathrm{out}}=25,\ T_0=100,
-\]
-and
-\[
-Q(z)=\begin{cases}
-Q_0\sin\!\left(\dfrac{(z-a)\pi}{b-a}\right),&a\leq z\leq b,\\
-0,&\text{otherwise}.
-\end{cases}
-\]
-
-Let $z_j=jh$, $h=1/N$, and $U=[T_1,\ldots,T_N]^{\mathsf T}$. At
+We use the grid $z_j=jh$, where $h=1/N$. Because $T_0$ is prescribed, the
+unknown vector is $U=[T_1,\ldots,T_N]^{\mathsf T}$, and we assemble the sparse
+linear system $AU=q$. Centered second-order differences give, for
 $j=1,\ldots,N-1$,
 \[
  \ell T_{j-1}+dT_j+rT_{j+1}=Q(z_j),
@@ -259,14 +290,25 @@ where
  d=\frac2{h^2},\qquad
  r=-\frac1{h^2}+\frac{v}{2h}.
 \]
-The known value $T_0$ is moved to the first entry on the right-hand side. We use
-this second-order row at $z=1$:
+Thus the first $N-1$ rows of $A$ are tridiagonal. In the first row, the known
+boundary value is moved to the right-hand side, so
+\[
+ q_1=Q(z_1)-\ell T_0.
+\]
+At $z=1$, we approximate the derivative by
+\[
+ T'(1)\approx\frac{3T_N-4T_{N-1}+T_{N-2}}{2h}.
+\]
+Substitution into the Robin boundary condition gives the final matrix row
 \[
  T_{N-2}-4T_{N-1}+(3+2h\alpha)T_N=2h\alpha T_{\mathrm{out}}.
 \]
-We solve the sparse matrix system with Matlab backslash.
+The code then solves the system once with \verb|U = A\rhs| and returns
+$T=[T_0;U]$.
 
-\subsection{Grid refinement}
+\subsection*{3(a) Grid refinement}
+\phantomsection
+\addcontentsline{toc}{subsection}{3(a) Grid refinement}
 
 \begin{figure}[htbp]
 \centering
@@ -298,9 +340,11 @@ The three values give
 This is very close to order 2. We evaluate $Q$ at the grid points $z_j$ and
 read $T(0.5)$ at $j=N/2$ on every grid.
 
-\subsection{Different velocities}
+\subsection*{3(b) Different velocities}
+\phantomsection
+\addcontentsline{toc}{subsection}{3(b) Different velocities}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Grids used for the velocity comparison.}
 \begin{tabular}{@{}ccc@{}}
@@ -315,7 +359,7 @@ $v$ & $N$ & $h$\\
 \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.74\linewidth]{part3_velocity_comparison.pdf}
 \caption{Temperature profiles for $v=1,5,15,100$.}
@@ -359,7 +403,9 @@ The second-order boundary rows are
 At the two upper corners we use the side rows. We now have one equation for
 each unknown.
 
-\subsection{Constant source}
+\subsection*{4(a) Numerical solution for a constant source}
+\phantomsection
+\addcontentsline{toc}{subsection}{4(a) Numerical solution for a constant source}
 
 For $f\equiv2$ and $h=0.2$, the computed value is
 \[
@@ -372,6 +418,11 @@ For $f\equiv2$ and $h=0.2$, the computed value is
 \caption{Numerical solution for $f\equiv2$ and $h=0.2$.}
 \end{figure}
 
+\FloatBarrier
+\subsection*{4(b) Exact solution for a constant source}
+\phantomsection
+\addcontentsline{toc}{subsection}{4(b) Exact solution for a constant source}
+
 Put $T=c_0+c_1y+c_2y^2$ into the PDE and the boundary conditions. This gives
 \[
  -2c_2=2,\qquad c_0=25,\qquad c_1+10c_2=0.
@@ -380,6 +431,12 @@ Hence
 \[
  \boxed{T(x,y)=25+10y-y^2},\qquad T(6,2)=41.
 \]
+
+\FloatBarrier
+\subsection*{4(c) Why the numerical solution is exact}
+\phantomsection
+\addcontentsline{toc}{subsection}{4(c) Why the numerical solution is exact}
+
 A Taylor expansion gives
 \[
  \frac{g(x+h)-2g(x)+g(x-h)}{h^2}
@@ -389,7 +446,10 @@ For a quadratic, $g^{(3)}=g^{(4)}=0$. The inner stencil and the one-sided
 boundary formulas are then exact. The difference at $(6,2)$ was only
 $3.70\times10^{-13}$, which comes from rounding in the computer.
 
-\subsection{Localized source}
+\FloatBarrier
+\subsection*{4(d) Localized source}
+\phantomsection
+\addcontentsline{toc}{subsection}{4(d) Localized source}
 
 For
 \[
@@ -397,7 +457,7 @@ For
 \]
 we build the matrix in the same way. Only the right-hand side changes.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Localized-source values at $(6,2)$.}
 \begin{tabular}{@{}cccc@{}}
@@ -436,19 +496,3 @@ saves both memory and time because most entries are zero.
 \end{figure}
 
 \FloatBarrier
-\section{Conclusions}
-
-The RK method had order 3, and the stability test matched the value from the
-stability region. For the stiff Robertson problem, IE was faster for larger
-errors, while RK was faster when a small error was needed. The 1D and 2D finite
-difference methods both had order 2. In Part 4, the numerical solution was exact
-for the quadratic test problem, apart from rounding errors.
-
-\section*{Submitted MATLAB files}
-
-\begin{itemize}
-\item \texttt{ce1\_part1\_rk\_landau\_lifshitz.m}, \texttt{rk3\_step.m}
-\item \texttt{ce1\_part2\_robertson.m}, \texttt{impeuler.m}, \texttt{impeuler\_nosave.m}
-\item \texttt{ce1\_part3\_convection\_diffusion\_1d.m}, \texttt{solve\_convection\_diffusion.m}
-\item \texttt{ce1\_part4\_elliptic\_heat\_2d.m}, \texttt{solve\_heat\_2d.m}
-\end{itemize}
