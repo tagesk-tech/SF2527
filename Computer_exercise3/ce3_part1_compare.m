@@ -41,48 +41,49 @@ xlabel('x'), ylabel('u(x,4)'), title('Square wave')
 legend('Exact', 'Upwind', 'Lax-Friedrichs', 'Lax-Wendroff')
 grid on
 
-%% d
-
-g = gsin; %change to gsin for the sine wave
-%Change upwind to laxfriedrichs or laxwendroff to test another method
-
-%Different CFL numbers and fixed Nx
+%% Part 1(d) parameters
+g = gsin;                 %gsin or gsq
+method = @laxwendroff;    %@upwind, @laxfriedrichs, or @laxwendroff
 CFL_vector = [0.2, 0.4, 0.8, 0.9];
+Nx_fixed = 100;
+Nx_vector = [50, 100, 200, 400];
+CFL_fixed = 0.8;
 
+%% Part 1(d): different CFL numbers on one fixed grid
+x = linspace(0, D, Nx_fixed)';
+h = x(2) - x(1);
 figure(3), hold on
 for i = 1:length(CFL_vector)
     k = CFL_vector(i)*h/a;
     Nt = round(T/k);
     t = (0:Nt)*k;
-    u = upwind(x, t, a, g);
+    u = method(x, t, a, g);
 
     plot(x, u, 'LineWidth', 1.2)
 end
 hold off
 xlabel('x'), ylabel('u(x,t)')
-title('Upwind: different CFL numbers and fixed grid')
-legend('CFL = 0.2', 'CFL = 0.4', 'CFL = 0.8', 'CFL = 0.9')
+title([func2str(method), ': different CFL numbers and fixed grid'])
+legend(compose('CFL = %.1f', CFL_vector))
 grid on
 
-%Different Nx and fixed CFL number
-Nx_vector = [50, 100, 200, 400];
-CFL = 0.8;
-
+%% Part 1(d): different grids at one fixed CFL number
 figure(4), hold on
 for i = 1:length(Nx_vector)
     x = linspace(0, D, Nx_vector(i))';
     h = x(2) - x(1);
-    k = CFL*h/a;
+    k = CFL_fixed*h/a;
     Nt = round(T/k);
     t = (0:Nt)*k;
-    u = upwind(x, t, a, g);
+    u = method(x, t, a, g);
 
     plot(x, u, 'LineWidth', 1.2)
 end
 hold off
 xlabel('x'), ylabel('u(x,t)')
-title('Upwind: different grids and CFL = 0.8')
-legend('N = 50', 'N = 100', 'N = 200', 'N = 400')
+title(sprintf('%s: different grids and CFL = %.1f', ...
+    func2str(method), CFL_fixed))
+legend(compose('N = %d', Nx_vector))
 grid on
 
 
