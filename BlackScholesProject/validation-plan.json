@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "scope": "Method-level verification of the shrinking-grid two-sweep ADE method for European call, cash-or-nothing call, and European put options at the Wang et al. parameter set, plus declared refinement and stress-test ranges.",
+  "risk_tier": "method",
+  "protocol_frozen_before_outcomes": false,
+  "provenance": {
+    "code_commit": "7a83d91113d5a0941fa9a61449e0a2ff6b652b96",
+    "dirty_tree": false,
+    "data_hashes": [
+      "Wang et al. (2025) local source PDF sha256:b678436c6fdf60b8277843d8c8e6832168922d604199e98a8039bf7e60d88dc2"
+    ],
+    "random_seeds": "deterministic; no random numbers",
+    "solver_status_policy": "Every run is retained and labeled OK, NEGATIVE, BLOWUP, or NONFINITE.",
+    "missing_case_policy": "Divergence, NaN, timeout, and rejected grids remain rows in the result set and are not excluded from conclusions."
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "statement": "The implementation reproduces the paper's call and cash-call target prices while agreeing with the corrected standard analytical formulas under refinement.",
+      "critical": true,
+      "status": "VERIFIED",
+      "falsification_test": {
+        "description": "Reverse the sign of only the PDE reaction term at Nt=1280; its target error must exceed the correct solver error and its target price must move by more than 2e-2.",
+        "result": "PASS"
+      },
+      "evidence": [
+        {
+          "kind": "exact_solution",
+          "expected": "Call 3.929276 and cash-call 49.221357 at S=K=100, r=0.03, sigma=0.3, T=0.1.",
+          "source": "Standard Black--Scholes closed forms with d1 using r + sigma^2/2 and d2=d1-sigma*sqrt(T).",
+          "tolerance": {
+            "rule": "Absolute formula tolerance 1e-6; Nt=320 paper-price reproduction tolerance 7e-3.",
+            "rationale": "Formula tolerance is floating-point scale after six-decimal rounding; reproduction tolerance covers the paper's four-decimal table and implementation indexing ambiguity."
+          },
+          "command": "matlab -batch run('tests/run_tests.m')",
+          "artifact": "results/paper_reproduction-call.csv",
+          "result": "PASS",
+          "implementation_path": "src/ade_shrinking_grid.m",
+          "oracle_path": "src/black_scholes_exact.m"
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "statement": "The tested call-price sequence has approximately second-order temporal convergence, and the centered spatial Black--Scholes operator has approximately second-order consistency; a full-solver h scan with fixed Nt is reported separately because it mixes spatial and sweep/time error.",
+      "critical": true,
+      "status": "CONDITIONAL",
+      "falsification_test": {
+        "description": "Require monotone error reduction for the time ladder and the spatial-operator ladder, report every pairwise order, and retain the non-monotone fixed-Nt full-solver h scan as a counterexample to calling that scan isolated spatial convergence.",
+        "result": "PASS"
+      },
+      "evidence": [
+        {
+          "kind": "convergence",
+          "expected": "Pairwise orders approach 2 for the solver time ladder and the independent spatial-operator consistency ladder.",
+          "source": "Paper's O(dt^2+h^2) claim for the averaged sweeps, subject to payoff regularity and moving-domain effects.",
+          "tolerance": {
+            "rule": "Call the evidence compatible with order two only if the fine-pair temporal target order and spatial-operator max-norm order lie in [1.5, 2.5] and their errors decrease monotonically. Do not promote the fixed-Nt full-solver h scan to an isolated spatial-order claim.",
+            "rationale": "The operator study removes temporal error; the separate solver scan exposes the error coupling and cancellation that otherwise corrupt the spatial conclusion."
+          },
+          "command": "matlab -batch run('experiments/run_all.m')",
+          "artifact": "results/time_convergence.csv, results/space_operator_convergence.csv, and results/space_coupled_solver_scan.csv",
+          "result": "PASS",
+          "implementation_path": "src/ade_shrinking_grid.m",
+          "oracle_path": "src/black_scholes_exact.m"
+        }
+      ]
+    },
+    {
+      "id": "C3",
+      "statement": "The put extension respects the time-dependent left boundary and numerical put--call parity over the declared refinement ladder.",
+      "critical": false,
+      "status": "VERIFIED",
+      "falsification_test": {
+        "description": "Check the final left boundary to machine precision and put--call parity independently at every Nt.",
+        "result": "PASS"
+      },
+      "evidence": [
+        {
+          "kind": "metamorphic_relation",
+          "expected": "C-P=S-K*exp(-rT).",
+          "source": "European put--call parity.",
+          "tolerance": {
+            "rule": "Absolute parity residual below 2e-2 at Nt=640 and decreasing under refinement.",
+            "rationale": "The threshold is tied to the observed target discretization scale in the paper's call table, not to roundoff."
+          },
+          "command": "matlab -batch run('tests/run_tests.m')",
+          "artifact": "results/put_validation.csv",
+          "result": "PASS",
+          "implementation_path": "src/ade_shrinking_grid.m",
+          "oracle_path": "put--call parity and src/black_scholes_exact.m"
+        }
+      ]
+    }
+  ]
+}

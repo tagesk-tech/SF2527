@@ -1,0 +1,6 @@
+results/*.csv
+results/*.png
+results/*.mat
+*.asv
+*.m~
+
